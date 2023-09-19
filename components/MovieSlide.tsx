@@ -1,17 +1,24 @@
 import Image from "next/image";
-import { TrendingMovie } from "../pages/index";
+import { TrendingMovie, GenreSearchMovie } from "../pages/index";
 
 interface MovieSlideProps {
-  movie: TrendingMovie;
+  movie: TrendingMovie | GenreSearchMovie;
   index: number;
+  showRanking?: boolean;
 }
 
-const MovieSlide: React.FC<MovieSlideProps> = ({ movie, index }) => {
+const MovieSlide: React.FC<MovieSlideProps> = ({
+  movie,
+  index,
+  showRanking = false,
+}) => {
   return (
     <div>
-      <div className="absolute top-1 left-1 bg-yellow-500 text-white font-bold p-2 rounded-full w-10 h-10 flex items-center justify-center">
-        <span>{index + 1}</span>
-      </div>
+      {showRanking && index !== undefined && (
+        <div className="absolute top-1 left-1 bg-yellow-500 text-white font-bold p-2 rounded-full w-10 h-10 flex items-center justify-center">
+          <span>{index + 1}</span>
+        </div>
+      )}
 
       <Image
         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}?app_key=${process.env.NEXT_PUBLIC_MOVIES_APPKEY}`}
