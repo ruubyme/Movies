@@ -17,7 +17,22 @@ export const fetchGenresIdList = async () => {
     `/genre/movie/list?api_key=${APP_KEY}&language=ko-KR`
   );
   const responseData = response.data["genres"];
-  responseData.unshift({ value: "", name: "선택 안함" });
+  responseData.unshift({ value: "none", name: "선택 안함" });
 
+  return responseData;
+};
+
+/**장르 검색 */
+export const fetchGenresSearch = async (
+  genreId: string,
+  page: string = "1"
+) => {
+  if (genreId === "0") {
+    return [];
+  }
+  const response = await movieAPI.get(
+    `/discover/movie?with_genres=${genreId}&api_key=${APP_KEY}&language=ko-KR&page=${page}`
+  );
+  const responseData = response.data.results;
   return responseData;
 };

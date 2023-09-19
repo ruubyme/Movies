@@ -1,8 +1,10 @@
-import Image from "next/image";
-import { fetchGenresIdList, fetchTrendingMovies } from "./api/movie";
+import {
+  fetchGenresIdList,
+  fetchGenresSearch,
+  fetchTrendingMovies,
+} from "./api/movie";
 import Dropdown from "../components/Dropdown";
-import { useState } from "react";
-import MovieSlide from "@/components/MovieSlide";
+import { useEffect, useState } from "react";
 import MovieSwiper from "@/components/MovieSwiper";
 
 export interface TrendingMovie {
@@ -11,6 +13,12 @@ export interface TrendingMovie {
   original_title: string;
   title: string;
   genre_ids: number[];
+}
+export interface GenreSearchMovie {
+  id: number;
+  poster_path: string;
+  original_title: string;
+  title: string;
 }
 
 interface HomeProps {
@@ -44,12 +52,15 @@ export const getServerSideProps = async () => {
 
 const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
   const [seletedGenre, setSeletedGenre] = useState({
-    value: "0",
+    value: "none",
     label: "선택 안함",
   });
+  const [genreSearchMovies, setGenreSearchMovies] = useState<
+    GenreSearchMovie[]
+  >([]);
 
   const dropdownOptions = genreList.map((genre) => ({
-    value: genre.id ? String(genre.id) : "",
+    value: genre.id ? String(genre.id) : "none",
     label: genre.name,
   }));
   console.log(dropdownOptions);
@@ -59,6 +70,24 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
     console.log(seletedGenre);
   };
 
+  const handleChangeGenre = async () => {
+    const allGenreSearchMovies = await fetchGenresSearch(seletedGenre.value);
+    const nextGenreSearchMovies: GenreSearchMovie[] = allGenreSearchMovies.map(
+      (movie: GenreSearchMovie) => ({
+        id: movie.id,
+        poster_path: movie.poster_path,
+        original_title: movie.original_title,
+        title: movie.title,
+      })
+    );
+    setGenreSearchMovies(nextGenreSearchMovies);
+  };
+
+  useEffect(() => {
+    handleChangeGenre();
+    console.log(seletedGenre);
+  }, [seletedGenre]);
+
   return (
     <>
       <h2 className="text-white p-2">주간 인기 영화 순위</h2>
@@ -67,10 +96,11 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
           dataList={trendMovies}
           spaceBetween={2}
           slidesPerView={3}
+          showRanking={true}
         />
         <div className="p-2">
           <div className="text-white">장르</div>
-          <div>
+          <div className="relative z-50">
             <Dropdown
               name={"genre"}
               value={seletedGenre.value}
@@ -79,6 +109,16 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
               className="w-full mt-2 p-2"
             />
           </div>
+          {seletedGenre.value !== "none" && (
+            <div className="pt-2">
+              <MovieSwiper
+                dataList={genreSearchMovies}
+                spaceBetween={2}
+                slidesPerView={3}
+              />
+              <div className="text-gray-400">더 보기</div>
+            </div>
+          )}
         </div>
       </div>
     </>

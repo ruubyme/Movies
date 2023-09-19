@@ -7,11 +7,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import MovieSlide from "./MovieSlide";
 import { TrendingMovie } from "@/pages";
+import { GenreSearchMovie } from "@/pages";
 
 interface MovieSwiperProps {
-  dataList: TrendingMovie[];
+  dataList: TrendingMovie[] | GenreSearchMovie[];
   spaceBetween: number;
   slidesPerView: number;
+  showRanking?: boolean;
 }
 SwiperCore.use([Navigation, Pagination]);
 
@@ -19,6 +21,7 @@ const MovieSwiper: React.FC<MovieSwiperProps> = ({
   dataList,
   spaceBetween,
   slidesPerView,
+  showRanking = false,
 }) => {
   const swiperRef = useRef<SwiperCore>();
 
@@ -42,7 +45,11 @@ const MovieSwiper: React.FC<MovieSwiperProps> = ({
         {dataList?.map((item, index) => {
           return (
             <SwiperSlide key={item.id}>
-              <MovieSlide movie={item} index={index} />
+              <MovieSlide
+                movie={item}
+                index={index}
+                showRanking={showRanking}
+              />
             </SwiperSlide>
           );
         })}
