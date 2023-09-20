@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation, Pagination } from "swiper/modules";
@@ -7,10 +7,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import MovieSlide from "./MovieSlide";
 import { TrendingMovie } from "@/pages";
-import { GenreSearchMovie } from "@/pages";
+import { GenreSearchMovieType } from "@/pages";
 
 interface MovieSwiperProps {
-  dataList: TrendingMovie[] | GenreSearchMovie[];
+  dataList: TrendingMovie[] | GenreSearchMovieType[];
   spaceBetween: number;
   slidesPerView: number;
   showRanking?: boolean;

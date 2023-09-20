@@ -6,6 +6,7 @@ import {
 import Dropdown from "../components/Dropdown";
 import { useEffect, useState } from "react";
 import MovieSwiper from "@/components/MovieSwiper";
+import Link from "next/link";
 
 export interface TrendingMovie {
   id: number;
@@ -14,7 +15,7 @@ export interface TrendingMovie {
   title: string;
   genre_ids: number[];
 }
-export interface GenreSearchMovie {
+export interface GenreSearchMovieType {
   id: number;
   poster_path: string;
   original_title: string;
@@ -56,35 +57,33 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
     label: "선택 안함",
   });
   const [genreSearchMovies, setGenreSearchMovies] = useState<
-    GenreSearchMovie[]
+    GenreSearchMovieType[]
   >([]);
 
   const dropdownOptions = genreList.map((genre) => ({
     value: genre.id ? String(genre.id) : "none",
     label: genre.name,
   }));
-  console.log(dropdownOptions);
 
   const handleChange = (label: string, value: string) => {
     setSeletedGenre({ value, label });
-    console.log(seletedGenre);
+    //console.log(seletedGenre);
   };
 
-  const handleChangeGenre = async () => {
+  const fetchGenreSearch = async () => {
     const allGenreSearchMovies = await fetchGenresSearch(seletedGenre.value);
-    const nextGenreSearchMovies: GenreSearchMovie[] = allGenreSearchMovies.map(
-      (movie: GenreSearchMovie) => ({
+    const nextGenreSearchMovies: GenreSearchMovieType[] =
+      allGenreSearchMovies.map((movie: GenreSearchMovieType) => ({
         id: movie.id,
         poster_path: movie.poster_path,
         original_title: movie.original_title,
         title: movie.title,
-      })
-    );
+      }));
     setGenreSearchMovies(nextGenreSearchMovies);
   };
 
   useEffect(() => {
-    handleChangeGenre();
+    fetchGenreSearch();
     console.log(seletedGenre);
   }, [seletedGenre]);
 
@@ -116,7 +115,14 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
                 spaceBetween={2}
                 slidesPerView={3}
               />
-              <div className="text-gray-400">더 보기</div>
+              <div className="text-center">
+                <Link
+                  href={`/genres/${seletedGenre.value}?label=${seletedGenre.label}`}
+                  className="text-gray-400"
+                >
+                  더 보기
+                </Link>
+              </div>
             </div>
           )}
         </div>
