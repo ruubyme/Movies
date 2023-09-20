@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { TrendingMovie, GenreSearchMovie } from "../pages/index";
+import { TrendingMovie, GenreSearchMovieType } from "../pages/index";
 
 interface MovieSlideProps {
-  movie: TrendingMovie | GenreSearchMovie;
+  movie: TrendingMovie | GenreSearchMovieType;
   index: number;
   showRanking?: boolean;
 }
@@ -29,7 +29,7 @@ const MovieSlide: React.FC<MovieSlideProps> = ({
       />
       <div>
         <div className="text-white">{movie.title}</div>
-        <div className="text-gray-600">{movie.original_title}</div>
+        <div className="text-gray-600 text-sm">{movie.original_title}</div>
       </div>
     </div>
   );
