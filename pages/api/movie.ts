@@ -36,3 +36,16 @@ export const fetchGenresSearch = async (
   const responseData = response.data.results;
   return responseData;
 };
+
+/**영화 검색 */
+export const fetchMovieSearch = async (keyword: string, page: string) => {
+  const response = await movieAPI.get(
+    `/search/movie?api_key=${APP_KEY}&query=${keyword}&language=ko-KR&page=${page}`
+  );
+  const responseData = response.data.results;
+  const total_pages = response.data.total_pages;
+  return {
+    responseData,
+    total_pages,
+  };
+};

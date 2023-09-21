@@ -7,6 +7,7 @@ import Dropdown from "../components/Dropdown";
 import { useEffect, useState } from "react";
 import MovieSwiper from "@/components/MovieSwiper";
 import Link from "next/link";
+import SearchForm from "@/components/SearchForm";
 
 export interface TrendingMovie {
   id: number;
@@ -89,7 +90,10 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
 
   return (
     <>
-      <h2 className="text-white p-2">주간 인기 영화 순위</h2>
+      <div className="flex justify-between">
+        <h2 className="text-white p-2">주간 인기 영화 순위</h2>
+        <SearchForm />
+      </div>
       <div>
         <MovieSwiper
           dataList={trendMovies}
