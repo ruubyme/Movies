@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { TrendingMovie, GenreSearchMovieType } from "../pages/index";
+import noPoster from "../public/noImage.svg";
+import { TrendingMovie, SearchMovieType } from "../pages/index";
 
 interface MovieSlideProps {
-  movie: TrendingMovie | GenreSearchMovieType;
+  movie: TrendingMovie | SearchMovieType;
   index: number;
   showRanking?: boolean;
 }
@@ -20,13 +21,17 @@ const MovieSlide: React.FC<MovieSlideProps> = ({
         </div>
       )}
 
-      <Image
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}?app_key=${process.env.NEXT_PUBLIC_MOVIES_APPKEY}`}
-        width={300}
-        height={100}
-        alt={movie.title}
-        priority
-      />
+      {movie.poster_path ? (
+        <Image
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}?app_key=${process.env.NEXT_PUBLIC_MOVIES_APPKEY}`}
+          width={300}
+          height={100}
+          alt={movie.title}
+          priority
+        />
+      ) : (
+        <Image src={noPoster} width={300} height={100} alt="No Image" />
+      )}
       <div>
         <div className="text-white">{movie.title}</div>
         <div className="text-gray-600 text-sm">{movie.original_title}</div>
