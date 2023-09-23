@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext } from "next";
-import { GenreSearchMovieType } from "..";
+import { SearchMovieType } from "..";
 import { fetchGenresSearch } from "../api/movie";
 import MovieSlide from "@/components/MovieSlide";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 interface GenresInfiniteScrollProps {
-  genreMovies: GenreSearchMovieType[];
+  genreMovies: SearchMovieType[];
   genreLabel: string;
   genreId: string;
 }
@@ -22,8 +22,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ? (context.query.label as string)
     : null;
   const allGenreMoviesData = await fetchGenresSearch(genreId, "1");
-  const genreMovies: GenreSearchMovieType[] = allGenreMoviesData.map(
-    (movie: GenreSearchMovieType) => ({
+  const genreMovies: SearchMovieType[] = allGenreMoviesData.map(
+    (movie: SearchMovieType) => ({
       id: movie.id,
       poster_path: movie.poster_path,
       original_title: movie.original_title,
@@ -45,26 +45,56 @@ const GenresInfiniteScroll: React.FC<GenresInfiniteScrollProps> = ({
   genreId,
 }) => {
   const [movies, setMovies] = useState(genreMovies);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [isLoading, setIsLoading] = useState(false);
+  const observerRef = useRef(null);
+  const preventRef = useRef(true);
+  const endRef = useRef(false);
 
   useEffect(() => {
-    const handleScroll = async () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 500
-      ) {
-        const nextPage = currentPage + 1;
-        const newMovies = await fetchGenresSearch(genreId, nextPage.toString());
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0.5,
+    });
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (preventRef.current) {
+      preventRef.current = false;
+      return;
+    }
+    fetchMoreMovies();
+  }, [currentPage]);
+  //옵저버 콜백함수
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (!endRef.current && target.isIntersecting && preventRef.current) {
+      preventRef.current = false;
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const fetchMoreMovies = useCallback(async () => {
+    //로딩시작
+    setIsLoading(true);
+    try {
+      const newMovies = await fetchGenresSearch(
+        genreId,
+        currentPage.toString()
+      );
+      if (newMovies.length === 0) {
+        endRef.current = true;
+      } else {
         setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-        setCurrentPage(nextPage);
+        preventRef.current = true;
       }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    } catch (e) {
+      console.error(e);
+    } finally {
+      //로딩 종료
+      setIsLoading(false);
+    }
   }, [currentPage]);
 
   return (
@@ -72,9 +102,15 @@ const GenresInfiniteScroll: React.FC<GenresInfiniteScrollProps> = ({
       <div className="text-white">{`"${genreLabel}" 검색 결과`}</div>
       <div className="grid grid-cols-4 gap-2 pt-2">
         {movies.map((movie, i) => {
-          return <MovieSlide key={movie.id} movie={movie} index={i} />;
+          return <MovieSlide key={i} movie={movie} index={i} />;
         })}
       </div>
+      {isLoading && (
+        <div className="flex justify-center mt-4">
+          <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      )}
+      <div ref={observerRef}></div>
     </div>
   );
 };

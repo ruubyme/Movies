@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SearchFormProps {
   keyword?: string;
@@ -8,6 +8,10 @@ interface SearchFormProps {
 const SearchForm: React.FC<SearchFormProps> = ({ keyword = "" }) => {
   const router = useRouter();
   const [value, setValue] = useState(keyword);
+
+  useEffect(() => {
+    setValue(keyword);
+  }, [keyword]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);

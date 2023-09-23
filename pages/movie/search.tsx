@@ -1,8 +1,8 @@
 import { GetServerSidePropsContext } from "next";
 import { fetchMovieSearch } from "../api/movie";
-import { GenreSearchMovieType as SearchMovieType } from "..";
+import { SearchMovieType } from "..";
 import MovieSlide from "@/components/MovieSlide";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import SearchForm from "@/components/SearchForm";
 
 interface SearchProps {
@@ -40,30 +40,58 @@ const SearchInfiniteScroll: React.FC<SearchProps> = ({
 }) => {
   const [movies, setMovies] = useState(searchMovies);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const observerRef = useRef(null);
+  const preventRef = useRef(true);
+  const endRef = useRef(false);
 
   useEffect(() => {
-    const handleScroll = async () => {
-      if (currentPage === Number(total_pages)) {
-        return;
-      }
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 500
-      ) {
-        const nextPage = currentPage + 1;
-        const newMovies: SearchMovieType[] = (
-          await fetchMovieSearch(keyword, nextPage.toString())
-        ).responseData;
-        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-        setCurrentPage(nextPage);
-      }
-    };
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0.5,
+    });
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
-    window.addEventListener("scroll", handleScroll);
+  useEffect(() => {
+    if (currentPage !== 1) {
+      fetchSearchMoreMovies();
+    }
+  }, [currentPage]);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+  //keyword변경 시
+  useEffect(() => {
+    setMovies(searchMovies);
+    setCurrentPage(1);
+    endRef.current = false;
+    preventRef.current = true;
+  }, [keyword]);
+
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (!endRef.current && target.isIntersecting && preventRef.current) {
+      preventRef.current = false;
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const fetchSearchMoreMovies = useCallback(async () => {
+    //로딩시작
+    setIsLoading(true);
+    try {
+      const newMovies = await fetchMovieSearch(keyword, currentPage.toString());
+      if (currentPage > newMovies.total_pages) {
+        endRef.current = true;
+      } else {
+        setMovies((prevMovies) => [...prevMovies, ...newMovies.responseData]);
+        console.log(movies);
+        preventRef.current = true;
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   }, [currentPage]);
 
   return (
@@ -72,12 +100,18 @@ const SearchInfiniteScroll: React.FC<SearchProps> = ({
       <SearchForm keyword={keyword} />
       <div className="grid grid-cols-4 gap-2 pt-2">
         {movies.map((movie, i) => {
-          return <MovieSlide key={movie.id} movie={movie} index={i} />;
+          return <MovieSlide key={i} movie={movie} index={i} />;
         })}
       </div>
-      {currentPage === Number(total_pages) && (
-        <div className="text-white">마지막 페이지 입니다.</div>
+      {isLoading && (
+        <div className="flex justify-center mt-4">
+          <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+        </div>
       )}
+      {currentPage > Number(total_pages) && (
+        <div className="text-white pt-2">마지막 페이지 입니다.</div>
+      )}
+      <div ref={observerRef}></div>
     </div>
   );
 };

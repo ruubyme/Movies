@@ -16,7 +16,7 @@ export interface TrendingMovie {
   title: string;
   genre_ids: number[];
 }
-export interface GenreSearchMovieType {
+export interface SearchMovieType {
   id: number;
   poster_path: string;
   original_title: string;
@@ -28,7 +28,7 @@ interface HomeProps {
   genreList: Genres[];
 }
 
-interface Genres {
+export interface Genres {
   id: number;
   name: string;
 }
@@ -57,9 +57,9 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
     value: "none",
     label: "선택 안함",
   });
-  const [genreSearchMovies, setGenreSearchMovies] = useState<
-    GenreSearchMovieType[]
-  >([]);
+  const [genreSearchMovies, setGenreSearchMovies] = useState<SearchMovieType[]>(
+    []
+  );
 
   const dropdownOptions = genreList.map((genre) => ({
     value: genre.id ? String(genre.id) : "none",
@@ -73,13 +73,14 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
 
   const fetchGenreSearch = async () => {
     const allGenreSearchMovies = await fetchGenresSearch(seletedGenre.value);
-    const nextGenreSearchMovies: GenreSearchMovieType[] =
-      allGenreSearchMovies.map((movie: GenreSearchMovieType) => ({
+    const nextGenreSearchMovies: SearchMovieType[] = allGenreSearchMovies.map(
+      (movie: SearchMovieType) => ({
         id: movie.id,
         poster_path: movie.poster_path,
         original_title: movie.original_title,
         title: movie.title,
-      }));
+      })
+    );
     setGenreSearchMovies(nextGenreSearchMovies);
   };
 
