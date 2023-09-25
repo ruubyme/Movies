@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { parseCookies } from "nookies";
 import { useState, useEffect } from "react";
+import userImage from "../public/userImage.svg";
+import Image from "next/image";
 
 const Header: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
@@ -28,9 +30,20 @@ const Header: React.FC = () => {
       <div>
         {isClient &&
           (isLogin ? (
-            <Link href="/login/logout">
-              <div className="text-neutral-400 text-sm">logout</div>
-            </Link>
+            <div className="flex items-center space-x-2">
+              <Link href="/myPage">
+                <Image
+                  src={userImage}
+                  width={20}
+                  height={20}
+                  alt="userImage"
+                  className="rounded-full"
+                />
+              </Link>
+              <Link href="/login/logout">
+                <div className="text-neutral-400 text-sm">logout</div>
+              </Link>
+            </div>
           ) : (
             <Link href="/login">
               <div className="text-neutral-400 text-sm">login</div>
