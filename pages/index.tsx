@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import MovieSwiper from "@/components/MovieSwiper";
 import Link from "next/link";
 import SearchForm from "@/components/SearchForm";
+import { useAuthToken } from "@/components/useAuthToken";
 
 export interface TrendingMovie {
   id: number;
