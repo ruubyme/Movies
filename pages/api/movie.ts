@@ -2,6 +2,7 @@ import { movieAPI } from ".";
 
 const APP_KEY = process.env.NEXT_PUBLIC_MOVIES_APPKEY;
 
+
 /**주간 인기 영화 순위 */
 export const fetchTrendingMovies = async () => {
   const response = await movieAPI.get(
@@ -37,7 +38,7 @@ export const fetchGenresSearch = async (
   return responseData;
 };
 
-/**영화 검색 */
+/**영화 keyword로 검색 */
 export const fetchMovieSearch = async (keyword: string, page: string) => {
   const response = await movieAPI.get(
     `/search/movie?api_key=${APP_KEY}&query=${keyword}&language=ko-KR&page=${page}`
@@ -48,4 +49,36 @@ export const fetchMovieSearch = async (keyword: string, page: string) => {
     responseData,
     total_pages,
   };
+};
+
+/**영화id로 상세정보 조회*/
+export const fetchMovieInfoSearch = async (movieId: string) => {
+  const response = await movieAPI.get(
+    `/movie/${movieId}?api_key=${APP_KEY}&append_to_response=credits&language=ko-KR`
+  );
+  const responseData = response.data;
+  const movieInfo = {
+    genres: responseData.genres.map((genre: any) => genre.name),
+    poster_path: responseData.poster_path,
+    overview: responseData.overview,
+    original_title: responseData.original_title,
+    title: responseData.title,
+    adult: responseData.adult,
+    runtime: responseData.runtime,
+    release_date: responseData.release_date,
+    production_countries: responseData.production_countries.map(
+      (country: any) => country.name
+    ),
+    backdrop_path: responseData.backdrop_path,
+    cast: responseData.credits.cast.map((cast: any) => {
+      const { name, character, profile_path } = cast;
+      return { name, character, profile_path };
+    }),
+    crew: responseData.credits.crew.map((crew: any) => {
+      const { name, department, profile_path } = crew;
+      return { name, department, profile_path };
+    }),
+  };
+
+  return movieInfo;
 };
