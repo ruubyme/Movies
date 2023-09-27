@@ -36,7 +36,7 @@ export const useAuthToken = () => {
     } else {
       //토큰이 없을 경우 헤더에서 제거, 로그인 페이지로 리다이렉트
       delete axios.defaults.headers.common["Authorization"];
-      router.push("/login");
+      //router.push("/login");
     }
   }, []);
   console.log(user);

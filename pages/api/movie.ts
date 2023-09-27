@@ -2,7 +2,6 @@ import { movieAPI } from ".";
 
 const APP_KEY = process.env.NEXT_PUBLIC_MOVIES_APPKEY;
 
-
 /**주간 인기 영화 순위 */
 export const fetchTrendingMovies = async () => {
   const response = await movieAPI.get(
@@ -58,6 +57,7 @@ export const fetchMovieInfoSearch = async (movieId: string) => {
   );
   const responseData = response.data;
   const movieInfo = {
+    id: responseData.id,
     genres: responseData.genres.map((genre: any) => genre.name),
     poster_path: responseData.poster_path,
     overview: responseData.overview,
@@ -79,6 +79,17 @@ export const fetchMovieInfoSearch = async (movieId: string) => {
       return { name, department, profile_path };
     }),
   };
-
   return movieInfo;
+};
+
+/**영화 미리보기 key */
+export const fetchMovieVedio = async (movieId: string) => {
+  const response = await movieAPI.get(
+    `/movie/${movieId}/videos?api_key=${APP_KEY}`
+  );
+  const responseData = response.data.results;
+  const youtubeTrailer = responseData.find(
+    (video: any) => video.site === "YouTube" && video.type === "Trailer"
+  );
+  return youtubeTrailer.key;
 };

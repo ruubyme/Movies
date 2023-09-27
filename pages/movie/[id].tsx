@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from "next";
-import { fetchMovieInfoSearch } from "../api/movie";
+import { fetchMovieInfoSearch, fetchMovieVedio } from "../api/movie";
 import MovieInformation from "@/components/MovieInformation";
+import YouTube from "react-youtube";
 
 interface CastType {
   name: string;
@@ -15,6 +16,7 @@ interface CrewType {
 }
 
 export interface MovieInfoType {
+  id: string;
   genres: string[];
   poster_path: string;
   overview: string;
@@ -31,6 +33,7 @@ export interface MovieInfoType {
 
 interface MovieInfoProps {
   movieInfo: MovieInfoType;
+  movieVedioKey: string;
 }
 
 export const getServerSideProps = async (
@@ -43,25 +46,42 @@ export const getServerSideProps = async (
   const movieId = context.params.id ? (context.params.id as string) : "";
 
   const movieInfo: MovieInfoType = await fetchMovieInfoSearch(movieId);
+  const movieVedioKey: string = await fetchMovieVedio(movieId);
 
   return {
     props: {
       movieInfo,
+      movieVedioKey,
     },
   };
 };
 
-const MovieInfo: React.FC<MovieInfoProps> = ({ movieInfo }) => {
+const MovieInfo: React.FC<MovieInfoProps> = ({ movieInfo, movieVedioKey }) => {
+  const opts = {
+    playerVars: {
+      autoplay: 1, //자동재생 활성화
+      rel: 0, //추천 동영상 비활성화
+      controls: 0, //컨트롤 바 비활성화
+    },
+  };
+
   return (
-    <div
-      className="h-screen bg-no-repeat bg-fixed bg-center bg-cover relative"
-      style={{
-        backgroundImage: `url(https://image.tmdb.org/t/p/w1280${movieInfo.backdrop_path})`,
-      }}
-    >
-      <div className="absolute bg-black bg-opacity-75 w-full">
-        <div>
-          <MovieInformation movie={movieInfo} />
+    <div>
+      <div className="flex justify-center">
+        <div className="">
+          <YouTube videoId={movieVedioKey} opts={opts} />
+        </div>
+      </div>
+      <div
+        className="h-screen bg-no-repeat bg-fixed bg-center bg-cover relative"
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/w1280${movieInfo.backdrop_path})`,
+        }}
+      >
+        <div className="absolute bg-black bg-opacity-75 w-full">
+          <div>
+            <MovieInformation movie={movieInfo} />
+          </div>
         </div>
       </div>
     </div>

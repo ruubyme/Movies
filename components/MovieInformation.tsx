@@ -2,6 +2,7 @@ import Image from "next/image";
 import { MovieInfoType } from "@/pages/movie/[id]";
 import react, { useState } from "react";
 import noProfileImage from "../public/userImage.svg";
+import LikesButton from "./LikesButton";
 
 interface movieInformationTypes {
   movie: MovieInfoType;
@@ -14,6 +15,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
 
   return (
     <div className="flex flex-wrap max-w-screen-lg mx-auto p-2">
+      {/**poster */}
       <div className="w-1/2">
         <Image
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}?app_key=${process.env.NEXT_PUBLIC_MOVIES_APPKEY}`}
@@ -23,6 +25,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
         />
       </div>
 
+      {/**moive title */}
       <div className="w-1/2 pl-2">
         <div className="text-white text-2xl font-bold">{movie.title}</div>
         <div className="text-gray-500 text-xl">{movie.original_title}</div>
@@ -45,6 +48,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
             </div>
           ))}
         </div>
+        <LikesButton movieId={movie.id}/>
       </div>
       <div className="w-full pt-3">
         {/**인물 정보 */}
@@ -56,7 +60,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
               : movie.cast.slice(0, 4)
             ).map((cast, i) => (
               <div key={i} className="w-1/4 p-2 flex flex-col items-center">
-                {cast.profile_path && (
+                {cast.profile_path ? (
                   <div className="relative w-12 h-12">
                     <Image
                       src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
@@ -66,6 +70,14 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
                       alt={cast.name}
                     />
                   </div>
+                ) : (
+                  <Image
+                    src={noProfileImage}
+                    width={50}
+                    height={50}
+                    className="rounded-full"
+                    alt="noProfileImage"
+                  />
                 )}
                 <div className="pl-2 text-center">
                   <p className="text-white">{cast.name}</p>
@@ -128,7 +140,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
         </div>
 
         <div className="pt-5 bg-gray-500 bg-opacity-25">
-          <p className="m-1 text-gray-200">
+          <p className="m-1 text-gray-200 bg-opacity-25">
             {showAllOverview
               ? movie.overview
               : `${movie.overview.slice(0, 30)} ...`}
