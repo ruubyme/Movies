@@ -4,4 +4,7 @@ const movieAPI = axios.create({
   baseURL: "https://api.themoviedb.org/3/",
 });
 
-export { movieAPI };
+const flaskAPI = axios.create({
+  baseURL: "http://127.0.0.1:8080/",
+});
+export { movieAPI, flaskAPI };
