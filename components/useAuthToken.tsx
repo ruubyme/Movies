@@ -9,7 +9,7 @@ interface DecodedToken {
   name: string;
 }
 
-interface User {
+export interface User {
   id: number;
   name: string;
 }

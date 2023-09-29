@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from "next";
 import { fetchMovieInfoSearch, fetchMovieVedio } from "../api/movie";
 import MovieInformation from "@/components/MovieInformation";
 import YouTube from "react-youtube";
+import { useAuthToken } from "@/components/useAuthToken";
 
 interface CastType {
   name: string;
@@ -57,6 +58,7 @@ export const getServerSideProps = async (
 };
 
 const MovieInfo: React.FC<MovieInfoProps> = ({ movieInfo, movieVedioKey }) => {
+  const { user } = useAuthToken();
   const opts = {
     playerVars: {
       autoplay: 1, //자동재생 활성화
@@ -80,7 +82,7 @@ const MovieInfo: React.FC<MovieInfoProps> = ({ movieInfo, movieVedioKey }) => {
       >
         <div className="absolute bg-black bg-opacity-75 w-full">
           <div>
-            <MovieInformation movie={movieInfo} />
+            <MovieInformation movie={movieInfo} user={user} />
           </div>
         </div>
       </div>

@@ -3,12 +3,14 @@ import { MovieInfoType } from "@/pages/movie/[id]";
 import react, { useState } from "react";
 import noProfileImage from "../public/userImage.svg";
 import LikesButton from "./LikesButton";
+import { User } from "./useAuthToken";
 
 interface movieInformationTypes {
   movie: MovieInfoType;
+  user: User | null;
 }
 
-const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
+const MovieInformation: React.FC<movieInformationTypes> = ({ movie, user }) => {
   const [showAllCast, setShowAllCast] = useState(false);
   const [showAllCrew, setShowAllCrew] = useState(false);
   const [showAllOverview, setShowAllOverview] = useState(false);
@@ -48,7 +50,7 @@ const MovieInformation: React.FC<movieInformationTypes> = ({ movie }) => {
             </div>
           ))}
         </div>
-        <LikesButton movieId={movie.id}/>
+        <LikesButton movieId={movie.id} user={user} />
       </div>
       <div className="w-full pt-3">
         {/**인물 정보 */}
