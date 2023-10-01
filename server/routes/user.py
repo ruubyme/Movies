@@ -16,7 +16,7 @@ def getLikes():
   
   try:
     conn, cur = conn_mysqldb()
-    cur.execute("SELECT * FROM likes WHERE movieId = %s AND userId = %s")
+    cur.execute("SELECT * FROM likes WHERE movie_Id = %s AND user_Id = %s", (movieId, userId))
     result = cur.fetchone()
     
     return jsonify({"success": True, "data": result})

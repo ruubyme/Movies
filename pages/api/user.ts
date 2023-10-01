@@ -1,4 +1,3 @@
-import axios from "axios";
 import { flaskAPI } from ".";
 
 /**user의 특정 영화 좋아요 여부  */

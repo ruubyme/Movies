@@ -77,7 +77,7 @@ const LikesButton: React.FC<LikesButtonProps> = ({ movieId, user }) => {
       //좋아요 추가 API 호출
       fetchAddLike(movieId, String(user.id));
     }
-    setIsLike(!isLike);
+    setIsLike((prev) => !prev);
   };
 
   return (
