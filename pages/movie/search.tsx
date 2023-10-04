@@ -4,6 +4,7 @@ import { SearchMovieType } from "..";
 import MovieSlide from "@/components/MovieSlide";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import SearchForm from "@/components/SearchForm";
+import Link from "next/link";
 
 interface SearchProps {
   keyword: string;
@@ -100,7 +101,11 @@ const SearchInfiniteScroll: React.FC<SearchProps> = ({
       <SearchForm keyword={keyword} />
       <div className="grid grid-cols-4 gap-2 pt-2">
         {movies.map((movie, i) => {
-          return <MovieSlide key={i} movie={movie} index={i} />;
+          return (
+            <Link href={`/movie/${movie.id}`} key={i}>
+              <MovieSlide movie={movie} index={i} />;
+            </Link>
+          );
         })}
       </div>
       {isLoading && (
