@@ -3,6 +3,7 @@ import { fetchMovieInfoSearch, fetchMovieVedio } from "../api/movie";
 import MovieInformation from "@/components/MovieInformation";
 import YouTube from "react-youtube";
 import { useAuthToken } from "@/components/useAuthToken";
+import ReviewTabContainer from "@/components/ReviewTabContainer";
 
 interface CastType {
   name: string;
@@ -83,6 +84,7 @@ const MovieInfo: React.FC<MovieInfoProps> = ({ movieInfo, movieVedioKey }) => {
         <div className="absolute bg-black bg-opacity-75 w-full">
           <div>
             <MovieInformation movie={movieInfo} user={user} />
+            <ReviewTabContainer movieId={movieInfo.id} user={user} />
           </div>
         </div>
       </div>

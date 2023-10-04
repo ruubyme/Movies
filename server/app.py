@@ -20,9 +20,12 @@ app.config["JWT_HEADER_TYPE"] = "Bearer"
 
 from routes.login import login_blueprint
 from routes.user import user_blueprint
+from routes.movie import movie_blueprint
 
 app.register_blueprint(login_blueprint)
 app.register_blueprint(user_blueprint)
+app.register_blueprint(movie_blueprint)
+
 
 if __name__ == '__main__':
   app.run(host='127.0.0.1', port='8080', debug=True)
