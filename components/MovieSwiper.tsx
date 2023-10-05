@@ -7,11 +7,11 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import MovieSlide from "./MovieSlide";
 import { TrendingMovie } from "@/pages";
-import { SearchMovieType } from "@/pages";
+import { SimpleMovieType } from "@/pages";
 import Link from "next/link";
 
 interface MovieSwiperProps {
-  dataList: TrendingMovie[] | SearchMovieType[];
+  dataList: TrendingMovie[] | SimpleMovieType[];
   spaceBetween: number;
   slidesPerView: number;
   showRanking?: boolean;
@@ -30,7 +30,6 @@ const MovieSwiper: React.FC<MovieSwiperProps> = ({
     <div>
       <Swiper
         onSwiper={(swiper) => {
-          //console.log("Swiper instance:", swiper);
           swiperRef.current = swiper;
         }}
         spaceBetween={spaceBetween}

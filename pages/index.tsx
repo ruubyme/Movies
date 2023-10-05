@@ -17,7 +17,7 @@ export interface TrendingMovie {
   title: string;
   genre_ids: number[];
 }
-export interface SearchMovieType {
+export interface SimpleMovieType {
   id: number;
   poster_path: string;
   original_title: string;
@@ -58,7 +58,7 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
     value: "none",
     label: "선택 안함",
   });
-  const [genreSearchMovies, setGenreSearchMovies] = useState<SearchMovieType[]>(
+  const [genreSearchMovies, setGenreSearchMovies] = useState<SimpleMovieType[]>(
     []
   );
 
@@ -74,8 +74,8 @@ const Home: React.FC<HomeProps> = ({ trendMovies, genreList }) => {
 
   const fetchGenreSearch = async () => {
     const allGenreSearchMovies = await fetchGenresSearch(seletedGenre.value);
-    const nextGenreSearchMovies: SearchMovieType[] = allGenreSearchMovies.map(
-      (movie: SearchMovieType) => ({
+    const nextGenreSearchMovies: SimpleMovieType[] = allGenreSearchMovies.map(
+      (movie: SimpleMovieType) => ({
         id: movie.id,
         poster_path: movie.poster_path,
         original_title: movie.original_title,
