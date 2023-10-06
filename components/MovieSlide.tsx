@@ -1,10 +1,10 @@
 import Image from "next/image";
 import noPoster from "../public/noImage.svg";
-import { TrendingMovie, SearchMovieType } from "../pages/index";
+import { TrendingMovie, SimpleMovieType } from "../pages/index";
 import Link from "next/link";
 
 interface MovieSlideProps {
-  movie: TrendingMovie | SearchMovieType;
+  movie: TrendingMovie | SimpleMovieType;
   index: number;
   showRanking?: boolean;
 }

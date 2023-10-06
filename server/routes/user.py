@@ -124,12 +124,12 @@ def addReview():
 @cross_origin()
 def deleteReview():
   data = request.get_json()
-  movieId = data.get('movieId')
+  reviewId = data.get('reviewId')
   userId = data.get('userId')
   
   try:
     conn, cur = conn_mysqldb()
-    cur.execute("DELETE FROM reviews WHERE movie_id = %s AND user_id = %s", (movieId, userId))
+    cur.execute("DELETE FROM reviews WHERE review_id = %s AND user_id = %s", (reviewId, userId))
     conn.commit()
     
     return jsonify({"success": True, "message": "리뷰가 삭제되었습니다."})
@@ -142,6 +142,32 @@ def deleteReview():
     cur.close()
     conn.close()  
     
+#user가 좋아요한 영화 리스트 조회 
+@user_blueprint.route('/user/likes/all', methods=['GET'])
+@cross_origin()
+def getAllLikesMovie():
+  userId = request.args.get('userId')
+  
+  if not userId:
+    return jsonify({"success": False, 'message': "User ID is required."})
+  
+  try:
+    conn, cur = conn_mysqldb()
+    cur.execute("SELECT movie_id FROM likes WHERE user_id = %s", (userId))
+    results = cur.fetchall()
+    
+    #영화 ID만 반환하기 위해 데이터 수정 
+    movie_ids = [result['movie_id'] for result in results]
+    
+    return jsonify({"success": True, "data": movie_ids})
+  
+  except Exception as e:
+    print(e)
+    return jsonify({'success': False, 'message': str(e)})
+  
+  finally:
+    cur.close()
+    conn.close()
     
   
   

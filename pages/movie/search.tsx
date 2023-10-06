@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { fetchMovieSearch } from "../api/movie";
-import { SearchMovieType } from "..";
+import { SimpleMovieType } from "..";
 import MovieSlide from "@/components/MovieSlide";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import SearchForm from "@/components/SearchForm";
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 interface SearchProps {
   keyword: string;
-  searchMovies: SearchMovieType[];
+  searchMovies: SimpleMovieType[];
   total_pages: string;
 }
 
@@ -16,8 +16,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const keyword = context.query.q as string;
 
   const { responseData, total_pages } = await fetchMovieSearch(keyword, "1");
-  const searchMovies: SearchMovieType[] = responseData.map(
-    (movie: SearchMovieType) => ({
+  const searchMovies: SimpleMovieType[] = responseData.map(
+    (movie: SimpleMovieType) => ({
       id: movie.id,
       poster_path: movie.poster_path,
       original_title: movie.original_title,
