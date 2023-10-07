@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext } from "next";
-import { SearchMovieType } from "..";
+import { SimpleMovieType } from "..";
 import { fetchGenresSearch } from "../api/movie";
 import MovieSlide from "@/components/MovieSlide";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 interface GenresInfiniteScrollProps {
-  genreMovies: SearchMovieType[];
+  genreMovies: SimpleMovieType[];
   genreLabel: string;
   genreId: string;
 }
@@ -22,8 +22,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ? (context.query.label as string)
     : null;
   const allGenreMoviesData = await fetchGenresSearch(genreId, "1");
-  const genreMovies: SearchMovieType[] = allGenreMoviesData.map(
-    (movie: SearchMovieType) => ({
+  const genreMovies: SimpleMovieType[] = allGenreMoviesData.map(
+    (movie: SimpleMovieType) => ({
       id: movie.id,
       poster_path: movie.poster_path,
       original_title: movie.original_title,
