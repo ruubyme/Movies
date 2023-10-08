@@ -8,14 +8,14 @@ import { Review } from "@/components/ReviewContent";
 import Rating from "@/components/Rating";
 import { fetchMovieInfoSearch } from "./api/movie";
 
-interface ReviewList extends Review {
+interface ReviewListType extends Review {
   title: string;
 }
 
 const MyPage: React.FC = () => {
   const { user } = useAuthToken();
   const [likesAllMovies, setLikesAllMovies] = useState<SimpleMovieType[]>([]);
-  const [reviewList, setReviewList] = useState<ReviewList[]>([]);
+  const [reviewList, setReviewList] = useState<ReviewListType[]>([]);
   const userName = user?.name;
 
   const fetchLikesAllMovies = async () => {

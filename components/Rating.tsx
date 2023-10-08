@@ -11,6 +11,7 @@ interface RatingProps {
   onSelect?: (rating: number) => void;
 }
 
+/**별 하나를 표현하는 컴포넌트 */
 const Star: React.FC<StartProps> = ({
   selected = false,
   rating = 0,
@@ -33,6 +34,7 @@ const Star: React.FC<StartProps> = ({
   );
 };
 
+/**별점을 나타내는 컴포넌트 */
 const Rating: React.FC<RatingProps> = ({ value = 0, onSelect }) => {
   return (
     <div>

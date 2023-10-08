@@ -1,5 +1,4 @@
 import { flaskAPI } from "@/pages/api";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Rating from "./Rating";
 
@@ -7,7 +6,7 @@ interface ReviewContentProps {
   movieId: string;
 }
 
-interface Review {
+export interface Review {
   review_id: number;
   movie_id: number;
   user_id: number;

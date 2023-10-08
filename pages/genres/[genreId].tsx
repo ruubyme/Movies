@@ -3,6 +3,7 @@ import { SimpleMovieType } from "..";
 import { fetchGenresSearch } from "../api/movie";
 import MovieSlide from "@/components/MovieSlide";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 
 interface GenresInfiniteScrollProps {
   genreMovies: SimpleMovieType[];
@@ -102,7 +103,11 @@ const GenresInfiniteScroll: React.FC<GenresInfiniteScrollProps> = ({
       <div className="text-white">{`"${genreLabel}" 검색 결과`}</div>
       <div className="grid grid-cols-4 gap-2 pt-2">
         {movies.map((movie, i) => {
-          return <MovieSlide key={i} movie={movie} index={i} />;
+          return (
+            <Link href={`/movie/${movie.id}`} key={i}>
+              <MovieSlide movie={movie} index={i} />
+            </Link>
+          );
         })}
       </div>
       {isLoading && (

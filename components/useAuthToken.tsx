@@ -39,6 +39,6 @@ export const useAuthToken = () => {
       //router.push("/login");
     }
   }, []);
-  console.log(user);
+  //console.log(user);
   return { user };
 };
